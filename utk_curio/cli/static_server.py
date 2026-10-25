@@ -172,6 +172,10 @@ def run_spa_static_server(directory: str, port: int, base_path: str = "", backen
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=dist_dir, **kwargs)
 
+        def end_headers(self):
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            super().end_headers()
+
         def _serves_index(self) -> bool:
             """Drop the base path from ``self.path``; True when the answer is index.html."""
             path, sep, query = self.path.partition("?")
@@ -204,7 +208,6 @@ def run_spa_static_server(directory: str, port: int, base_path: str = "", backen
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
-            self.send_header("Cache-Control", "no-cache")
             self.end_headers()
             if with_body:
                 self.wfile.write(body)

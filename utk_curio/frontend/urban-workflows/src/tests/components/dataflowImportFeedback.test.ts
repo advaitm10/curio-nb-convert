@@ -102,6 +102,18 @@ describe("importing a Jupyter notebook from the projects page", () => {
   const handler = () =>
     slice(PROJECTS_LIST, "const handleNotebookImport", "\n  return (");
 
+  it("uses the Python converter and opens the newly created project", () => {
+    expect(handler()).toContain("notebooksApi.convert(json, name)");
+    expect(handler()).not.toContain("notebookToTrill");
+    expect(handler()).toMatch(/const project = await projectsApi\.create\([\s\S]*navigate\(`\/dataflow\/\$\{project\.id\}`\)/);
+    expect(handler()).not.toContain("loadProjects()");
+  });
+
+  it("uses the backend's Python conversion pipeline", () => {
+    expect(handler()).toContain("notebooksApi.convert(json, name)");
+    expect(handler()).not.toContain("notebookToTrill");
+  });
+
   it("reports a notebook that is not valid JSON", () => {
     expect(handler()).toMatch(/showToast\([\s\S]*not valid JSON/);
   });

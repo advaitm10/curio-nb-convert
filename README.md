@@ -124,6 +124,8 @@ Curio is a framework for collaborative urban visual analytics that uses a datafl
 
 See the full [release notes](https://github.com/urban-toolkit/curio/releases) for more. To get started, follow the [usage guide](docs/USAGE.md) or jump into the [quick start tutorial](docs/QUICK-START.md). If you'd like to contribute, read the [contribution guide](docs/CONTRIBUTING.md).
 
+On the Projects page, **Import Jupyter notebook** analyzes code cells and variable dependencies to build a Curio workflow. Conversion does not execute notebook code; inferred cell types and dependencies are heuristic and should be reviewed before running the workflow.
+
 ---
 
 ## Overview

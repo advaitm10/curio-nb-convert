@@ -72,3 +72,8 @@ pytest-flask>=1.3.0
 allure-pytest>=2.16.0
 Pillow>=10.0
 numpy>=1.26
+
+# Jupyter notebook conversion (nbformat parsing + NetworkX lineage graph)
+# ------------------------------------------------------------------------------
+nbformat>=5.10
+networkx>=3.2

@@ -5,7 +5,7 @@ import { CardContextMenu } from "../../components/catalog/CardContextMenu";
 import { projectsApi, ProjectSummary } from "../../api/projectsApi";
 import { useToastContext } from "../../providers/ToastProvider";
 import { projectActions, type ProjectActionId } from "./projectActions";
-import { notebookToTrill } from "../../NotebookConvertor";
+import { notebooksApi } from "../../services/notebooksApi";
 import DataflowThumbnail from "../../components/DataflowThumbnail";
 import { CatalogItemStripHeader } from "../../components/catalog/CatalogKindVisuals";
 import {
@@ -26,7 +26,6 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 import PromptDialog from "../../components/PromptDialog";
 import DataflowCategoriesDialog from "../../components/projects/DataflowCategoriesDialog";
 import { UNREADABLE_FILE_MESSAGE } from "../../utils/dataflowImport";
-import { backendUrl } from "../../utils/backendUrl";
 import { countLabel } from "../../utils/countLabel";
 import {
   FACET_SECTIONS,
@@ -298,10 +297,14 @@ const ProjectsList: React.FC = () => {
         return;
       }
       try {
-        const trillSpec = await notebookToTrill(json, backendUrl());
         const name = file.name.replace(/\.ipynb$/i, "");
-        await projectsApi.create({ name, spec: trillSpec as unknown as Record<string, unknown>, outputs: [] });
-        loadProjects();
+        const trillSpec = await notebooksApi.convert(json, name);
+        const project = await projectsApi.create({
+          name,
+          spec: trillSpec as unknown as Record<string, unknown>,
+          outputs: [],
+        });
+        navigate(`/dataflow/${project.id}`);
       } catch (err) {
         // Was console-only: picking a file and getting no response at all
         // reads as a broken button, and a malformed .ipynb is the common case.

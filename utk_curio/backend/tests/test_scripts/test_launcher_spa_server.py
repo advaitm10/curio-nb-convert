@@ -97,9 +97,11 @@ def test_client_routes_fall_back_to_index(spa_server, path):
 
 
 def test_real_asset_is_served_verbatim(spa_server):
-    status, body = _get(spa_server, "/bundle.js", accept=ANY_ACCEPT)
-    assert status == 200
-    assert body == ASSET_BODY
+    request = urllib.request.Request(f"{spa_server}/bundle.js", headers={"Accept": ANY_ACCEPT})
+    with urllib.request.urlopen(request, timeout=5) as response:
+        assert response.status == 200
+        assert response.read().decode("utf-8") == ASSET_BODY
+        assert response.headers["Cache-Control"] == "no-cache, no-store, must-revalidate"
 
 
 def test_root_serves_index(spa_server):
